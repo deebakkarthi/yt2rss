@@ -1,0 +1,24 @@
+#!/bin/sh
+usage() {
+    printf "Usage: yt2rss [-h|URL]\nIf no arguements are passed yt2rss reads from STDIN\n"
+    exit 1
+}
+
+
+get_rss() {
+    curl -L -s $1  | sed  "s/>/>\n/g"  | grep "rss+xml" | sed "s/.* href=\"\(.*\)\".*/\1/"
+}
+
+
+if [ $# -eq 0 ]; then
+    while read url
+    do
+        get_rss $url
+    done;
+else
+    if [ $1 = "-h" ]; then
+        usage
+    else
+        get_rss $1
+    fi
+fi
