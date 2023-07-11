@@ -1,6 +1,11 @@
 #!/bin/sh
 usage() {
-    printf "Usage: yt2rss [-h|URL]\nIf no arguements are passed yt2rss reads from STDIN\n"
+    progname=$(basename $0)
+    printf "Usage: $progname [-h|-c|URL]
+    -h: Print this help message
+    -c: Copy to clipboard
+    URL: YouTube channel URL
+    If no arguements are passed $progname reads from STDIN\n"
     exit 1
 }
 
@@ -16,9 +21,15 @@ if [ $# -eq 0 ]; then
         get_rss $url
     done;
 else
-    if [ $1 = "-h" ]; then
-        usage
-    else
-        get_rss $1
-    fi
+    case $1 in
+        -h)
+            usage
+            ;;
+        -c)
+            get_rss $2 | pbcopy
+            ;;
+        *)
+            get_rss $1
+            ;;
+    esac
 fi
